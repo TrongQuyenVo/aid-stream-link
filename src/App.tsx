@@ -30,16 +30,22 @@ const queryClient = new QueryClient();
 
 const App = () => {
   const { isAuthenticated, user } = useAuthStore();
-  const { setTheme } = useAppStore();
+  const { theme, setTheme } = useAppStore();
 
   useEffect(() => {
-    // Initialize theme
-    const savedTheme = localStorage.getItem('theme') as 'light' | 'dark';
+    // Initialize theme from localStorage
+    const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
     if (savedTheme) {
       setTheme(savedTheme);
-      document.documentElement.classList.toggle('dark', savedTheme === 'dark');
     }
+    document.documentElement.classList.toggle('dark', theme === 'dark');
   }, [setTheme]);
+
+  // Update theme when it changes
+  useEffect(() => {
+    localStorage.setItem('theme', theme);
+    document.documentElement.classList.toggle('dark', theme === 'dark');
+  }, [theme]);
 
   // Protected Route Component
   const ProtectedRoute = ({ children, roles }: { children: React.ReactNode; roles?: string[] }) => {

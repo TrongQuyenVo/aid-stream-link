@@ -27,7 +27,7 @@ export default function Dashboard() {
       default:
         return (
           <div className="text-center">
-            <h2 className="text-2xl font-bold">Vai trò không hợp lệ</h2>
+            <h2 className="text-2xl font-bold">{t('invalidRole')}</h2>
           </div>
         );
     }
@@ -51,7 +51,7 @@ export default function Dashboard() {
             {t('welcome')}, {user.fullName}!
           </h1>
           <p className="text-white/90 text-lg">
-            Vai trò: <span className="font-medium capitalize">{t(user.role)}</span>
+            {t('role')}: <span className="font-medium capitalize">{t(user.role)}</span>
           </p>
         </motion.div>
       </div>

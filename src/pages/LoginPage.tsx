@@ -17,17 +17,17 @@ import { authAPI } from '@/lib/api';
 import { useAuthStore } from '@/stores/authStore';
 import { useTranslation } from 'react-i18next';
 
-const schema = yup.object({
-  email: yup.string().email('Email không hợp lệ').required('Email là bắt buộc'),
-  password: yup.string().required('Mật khẩu là bắt buộc'),
-});
-
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuthStore();
   const navigate = useNavigate();
   const { t } = useTranslation();
+
+  const schema = yup.object({
+    email: yup.string().email(t('invalidEmail', 'Invalid email')).required(t('emailRequired', 'Email is required')),
+    password: yup.string().required(t('passwordRequired', 'Password is required')),
+  });
 
   // Check for demo parameter in URL
   const urlParams = new URLSearchParams(window.location.search);

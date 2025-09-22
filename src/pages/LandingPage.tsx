@@ -12,31 +12,31 @@ export default function LandingPage() {
   const features = [
     {
       icon: Heart,
-      title: 'Chăm sóc y tế từ thiện',
-      description: 'Kết nối bệnh nhân có hoàn cảnh khó khăn với các bác sĩ tình nguyện và tổ chức từ thiện.',
+      title: t('charitySupport'),
+      description: t('charitySupportDesc'),
     },
     {
       icon: Stethoscope,
-      title: 'Bác sĩ chuyên nghiệp',
-      description: 'Đội ngũ bác sĩ giàu kinh nghiệm sẵn sàng hỗ trợ và tư vấn miễn phí.',
+      title: t('professionalDoctors'),
+      description: t('professionalDoctorsDesc'),
     },
     {
       icon: Gift,
-      title: 'Quyên góp minh bạch',
-      description: 'Hệ thống quyên góp công khai, minh bạch giúp hỗ trợ những người cần giúp đỡ.',
+      title: t('transparentDonations'),
+      description: t('transparentDonationsDesc'),
     },
     {
       icon: Users,
-      title: 'Cộng đồng hỗ trợ',
-      description: 'Tham gia cộng đồng yêu thương, cùng nhau giúp đỡ những hoàn cảnh khó khăn.',
+      title: t('supportCommunity'),
+      description: t('supportCommunityDesc'),
     },
   ];
 
   const stats = [
-    { number: '10,000+', label: 'Bệnh nhân được hỗ trợ' },
-    { number: '500+', label: 'Bác sĩ tình nguyện' },
-    { number: '2,500+', label: 'Cuộc hẹn đã hoàn thành' },
-    { number: '50+', label: 'Tổ chức từ thiện' },
+    { number: '10,000+', label: t('patientsSupported') },
+    { number: '500+', label: t('volunteerDoctors') },
+    { number: '2,500+', label: t('completedAppointments') },
+    { number: '50+', label: t('charityOrganizations') },
   ];
 
   return (

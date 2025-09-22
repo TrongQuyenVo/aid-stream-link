@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
@@ -20,13 +19,14 @@ import { Button } from '@/components/ui/button';
 import { useAuthStore } from '@/stores/authStore';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
+import { useSidebar } from '@/contexts/SidebarContext';
 
 interface SidebarProps {
   className?: string;
 }
 
 export function Sidebar({ className }: SidebarProps) {
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const { isCollapsed, toggleCollapsed } = useSidebar();
   const { user } = useAuthStore();
   const { t } = useTranslation();
   const location = useLocation();
@@ -87,7 +87,7 @@ export function Sidebar({ className }: SidebarProps) {
       initial={{ width: isCollapsed ? 80 : 280 }}
       animate={{ width: isCollapsed ? 80 : 280 }}
       className={cn(
-        'border-r bg-sidebar flex flex-col transition-all duration-300',
+        'border-r bg-sidebar flex flex-col transition-all duration-300 h-screen',
         className
       )}
     >
@@ -104,7 +104,7 @@ export function Sidebar({ className }: SidebarProps) {
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => setIsCollapsed(!isCollapsed)}
+          onClick={toggleCollapsed}
           className="text-sidebar-foreground hover:bg-sidebar-accent"
         >
           {isCollapsed ? <Menu className="h-4 w-4" /> : <X className="h-4 w-4" />}
