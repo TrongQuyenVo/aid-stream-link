@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { Link, useNavigate } from 'react-router-dom';
-import { Eye, EyeOff, Heart, LogIn } from 'lucide-react';
+import { Eye, EyeOff, Heart, LogIn, Users } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 import { Button } from '@/components/ui/button';
@@ -29,23 +29,58 @@ export default function LoginPage() {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
+  // Check for demo parameter in URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const demoRole = urlParams.get('demo');
+
+  // Demo accounts
+  const demoAccounts = {
+    patient: { email: 'patient@demo.com', password: 'demo123', role: 'patient' as const, name: 'Nguyễn Văn Nam (Bệnh nhân)' },
+    doctor: { email: 'doctor@demo.com', password: 'demo123', role: 'doctor' as const, name: 'BS. Trần Thị Lan (Bác sĩ)' },
+    admin: { email: 'admin@demo.com', password: 'demo123', role: 'admin' as const, name: 'Admin System (Quản trị viên)' },
+    charity: { email: 'charity@demo.com', password: 'demo123', role: 'charity_admin' as const, name: 'Phạm Văn Hòa (Quản lý từ thiện)' }
+  };
+
   const {
     register,
     handleSubmit,
     formState: { errors },
+    setValue,
   } = useForm({
     resolver: yupResolver(schema),
   });
 
+  // Auto-fill demo account if demo parameter exists
+  useEffect(() => {
+    if (demoRole && demoAccounts[demoRole as keyof typeof demoAccounts]) {
+      const demo = demoAccounts[demoRole as keyof typeof demoAccounts];
+      setValue('email', demo.email);
+      setValue('password', demo.password);
+    }
+  }, [demoRole, setValue]);
+
   const onSubmit = async (data: any) => {
     setIsLoading(true);
     try {
-      const response = await authAPI.login(data);
-      const { user, token } = response.data;
+      // Check if it's a demo account
+      const demoAccount = Object.values(demoAccounts).find(acc => acc.email === data.email);
       
-      login(user, token);
-      toast.success(t('loginSuccess'));
-      navigate('/dashboard');
+      if (demoAccount && data.password === 'demo123') {
+        // Mock successful login for demo accounts
+        const mockUser = {
+          id: Math.random().toString(),
+          role: demoAccount.role,
+          fullName: demoAccount.name,
+          email: demoAccount.email,
+        };
+        
+        login(mockUser, 'demo-token');
+        toast.success(`Đăng nhập demo thành công: ${demoAccount.name}`);
+        navigate('/dashboard');
+      } else {
+        // For real authentication, you need Supabase integration
+        toast.error('Cần kết nối Supabase để xác thực thực tế. Hiện tại chỉ hỗ trợ demo accounts.');
+      }
     } catch (error) {
       toast.error(t('loginError'));
     } finally {
@@ -75,6 +110,26 @@ export default function LoginPage() {
           </CardHeader>
 
           <CardContent>
+            {/* Demo Account Info */}
+            {demoRole && (
+              <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mb-6 p-4 bg-primary/10 border border-primary/20 rounded-lg"
+              >
+                <div className="flex items-center gap-2 mb-2">
+                  <Users className="h-4 w-4 text-primary" />
+                  <span className="text-sm font-medium text-primary">Tài khoản Demo</span>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  Đang sử dụng: <strong>{demoAccounts[demoRole as keyof typeof demoAccounts]?.name}</strong>
+                </p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Email và mật khẩu đã được điền sẵn
+                </p>
+              </motion.div>
+            )}
+
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="email">{t('email')}</Label>
