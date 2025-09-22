@@ -168,6 +168,8 @@ const resources = {
       transparentDonationsDesc: 'Hệ thống quyên góp công khai, minh bạch giúp hỗ trợ những người cần giúp đỡ',
       supportCommunity: 'Cộng đồng hỗ trợ',
       supportCommunityDesc: 'Tham gia cộng đồng yêu thương, cùng nhau giúp đỡ những hoàn cảnh khó khăn',
+      builtWithLove: 'Được xây dựng với tình yêu thương',
+      scrollToTop: 'Cuộn lên đầu trang',
       
       // Stats
       patientsSupported: 'Bệnh nhân được hỗ trợ',
@@ -342,6 +344,8 @@ const resources = {
       transparentDonationsDesc: 'Public and transparent donation system to help those in need',
       supportCommunity: 'Support Community',
       supportCommunityDesc: 'Join our caring community to help those in difficult circumstances',
+      builtWithLove: 'Built with love',
+      scrollToTop: 'Scroll to top',
       
       // Stats
       patientsSupported: 'Patients Supported',

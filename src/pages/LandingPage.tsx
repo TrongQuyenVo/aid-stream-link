@@ -1,13 +1,41 @@
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowRight, Heart, Users, Stethoscope, Gift, Activity, ChevronRight, Link, Phone, MapPin, Mail } from 'lucide-react';
+import { ArrowRight, Heart, Users, Stethoscope, Gift, Activity, ChevronRight, Link, Phone, MapPin, Mail, Globe, Moon, Sun, ChevronUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useAppStore } from '@/stores/appStore';
 
 export default function LandingPage() {
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const { theme, setTheme, language, setLanguage } = useAppStore();
+  const [showScrollTop, setShowScrollTop] = useState(false);
+
+  // Handle scroll to show/hide scroll to top button
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScrollTop(window.scrollY > 400);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const toggleTheme = () => {
+    setTheme(theme === 'light' ? 'dark' : 'light');
+  };
+
+  const toggleLanguage = () => {
+    const newLang = language === 'vi' ? 'en' : 'vi';
+    setLanguage(newLang);
+    i18n.changeLanguage(newLang);
+  };
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   const features = [
     {
@@ -41,8 +69,8 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Navigation */}
-      <nav className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      {/* Fixed Navigation */}
+      <nav className="fixed top-0 left-0 right-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container mx-auto flex h-16 items-center justify-between px-4">
           <div className="flex items-center space-x-2">
             <div className="h-8 w-8 rounded-lg bg-gradient-primary flex items-center justify-center">
@@ -52,6 +80,26 @@ export default function LandingPage() {
           </div>
 
           <div className="flex items-center space-x-4">
+            {/* Language Toggle */}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={toggleLanguage}
+              className="text-muted-foreground hover:text-foreground"
+            >
+              <Globe className="h-5 w-5" />
+            </Button>
+
+            {/* Theme Toggle */}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={toggleTheme}
+              className="text-muted-foreground hover:text-foreground"
+            >
+              {theme === 'light' ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
+            </Button>
+
             <Button variant="ghost" onClick={() => navigate('/login')}>
               {t('login')}
             </Button>
@@ -63,7 +111,7 @@ export default function LandingPage() {
       </nav>
 
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-hero py-32 text-white">
+      <section className="relative overflow-hidden bg-gradient-hero pt-24 pb-16 text-white">
         <div className="absolute inset-0 bg-black/30" />
         <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-transparent" />
         <div className="container relative mx-auto px-4">
@@ -474,12 +522,31 @@ export default function LandingPage() {
               
               <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                 <Heart className="h-4 w-4 text-destructive animate-pulse" />
-                <span>Được xây dựng với tình yêu thương</span>
+                <span>{t('builtWithLove', 'Được xây dựng với tình yêu thương')}</span>
               </div>
             </div>
           </div>
         </div>
       </footer>
+
+      {/* Scroll to Top Button */}
+      {showScrollTop && (
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.8 }}
+          className="fixed bottom-8 right-8 z-40"
+        >
+          <Button
+            onClick={scrollToTop}
+            size="icon"
+            className="h-12 w-12 rounded-full bg-gradient-primary shadow-lg hover:shadow-glow transition-all duration-300 hover:scale-110"
+            title={t('scrollToTop')}
+          >
+            <ChevronUp className="h-6 w-6 text-white" />
+          </Button>
+        </motion.div>
+      )}
     </div>
   );
 }
