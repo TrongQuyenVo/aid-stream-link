@@ -6,6 +6,8 @@ import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 
 export default function DonationsPage() {
+  const [selectedCampaign, setSelectedCampaign] = useState(null);
+  const [showDonationForm, setShowDonationForm] = useState(false);
   const campaigns = [
     {
       id: 1,

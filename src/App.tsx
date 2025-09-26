@@ -25,6 +25,8 @@ import CharityPage from "./pages/CharityPage";
 import NotificationsPage from "./pages/NotificationsPage";
 import ChatbotPage from "./pages/ChatbotPage";
 import NotFound from "./pages/NotFound";
+import UsersPage from "./pages/UsersPage";
+import AnalyticsPage from "./pages/AnalyticsPage";
 
 const queryClient = new QueryClient();
 
@@ -130,6 +132,18 @@ const App = () => {
               <Route path="/chatbot" element={
                 <ProtectedRoute>
                   <ChatbotPage />
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/users" element={
+                <ProtectedRoute roles={['admin']}>
+                  <UsersPage />
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/analytics" element={
+                <ProtectedRoute roles={['admin']}>
+                  <AnalyticsPage />
                 </ProtectedRoute>
               } />
               

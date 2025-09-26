@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 export default function DoctorsPage() {
+  const [selectedDoctor, setSelectedDoctor] = useState(null);
+  const [showBookingForm, setShowBookingForm] = useState(false);
   const mockDoctors = [
     {
       id: 1,

@@ -1,11 +1,14 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { HandHeart, AlertCircle, Clock, CheckCircle, XCircle } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
+import AssistanceRequestForm from '@/components/forms/AssistanceRequestForm';
 
 export default function AssistancePage() {
+  const [showRequestForm, setShowRequestForm] = useState(false);
   const assistanceRequests = [
     {
       id: 1,
@@ -115,7 +118,7 @@ export default function AssistancePage() {
           <h1 className="healthcare-heading text-3xl font-bold">Yêu cầu hỗ trợ y tế</h1>
           <p className="healthcare-subtitle">Quản lý và theo dõi các yêu cầu hỗ trợ từ bệnh nhân</p>
         </div>
-        <Button className="btn-healthcare">
+        <Button className="btn-healthcare" onClick={() => setShowRequestForm(true)}>
           <HandHeart className="mr-2 h-4 w-4" />
           Tạo yêu cầu mới
         </Button>
@@ -249,6 +252,11 @@ export default function AssistancePage() {
           );
         })}
       </div>
+
+      <AssistanceRequestForm 
+        open={showRequestForm} 
+        onOpenChange={setShowRequestForm} 
+      />
     </motion.div>
   );
 }
