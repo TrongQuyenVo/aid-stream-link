@@ -31,7 +31,7 @@ interface Doctor {
 interface BookAppointmentFormProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  doctor: Doctor;
+  doctor: Doctor | null;
 }
 
 interface FormData {
@@ -81,6 +81,8 @@ export default function BookAppointmentForm({ open, onOpenChange, doctor }: Book
   const unavailableTimes = ['09:00', '10:30', '15:00'];
 
   const onSubmit = async (data: any) => {
+    if (!doctor) return;
+    
     setIsSubmitting(true);
     
     try {
@@ -121,27 +123,30 @@ export default function BookAppointmentForm({ open, onOpenChange, doctor }: Book
           </DialogDescription>
         </DialogHeader>
 
-        {/* Doctor Info */}
-        <div className="bg-muted/50 p-4 rounded-lg">
-          <div className="flex items-center space-x-4">
-            <Avatar className="h-16 w-16">
-              <AvatarImage src={doctor.avatar} />
-              <AvatarFallback>{doctor.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
-            </Avatar>
-            <div className="flex-1">
-              <h3 className="font-semibold text-lg healthcare-heading">{doctor.name}</h3>
-              <p className="text-muted-foreground">{doctor.specialty}</p>
-              <div className="flex items-center space-x-4 mt-2">
-                <Badge variant="secondary">
-                  ⭐ {doctor.rating}/5
-                </Badge>
-                <Badge variant="outline">
-                  {doctor.experience} năm kinh nghiệm
-                </Badge>
+        {/* Only render form content when doctor is selected */}
+        {doctor ? (
+          <>
+            {/* Doctor Info */}
+            <div className="bg-muted/50 p-4 rounded-lg">
+              <div className="flex items-center space-x-4">
+                <Avatar className="h-16 w-16">
+                  <AvatarImage src={doctor.avatar} />
+                  <AvatarFallback>{doctor.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                </Avatar>
+                <div className="flex-1">
+                  <h3 className="font-semibold text-lg healthcare-heading">{doctor.name}</h3>
+                  <p className="text-muted-foreground">{doctor.specialty}</p>
+                  <div className="flex items-center space-x-4 mt-2">
+                    <Badge variant="secondary">
+                      ⭐ {doctor.rating}/5
+                    </Badge>
+                    <Badge variant="outline">
+                      {doctor.experience} năm kinh nghiệm
+                    </Badge>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           {/* Date Selection */}
@@ -310,8 +315,14 @@ export default function BookAppointmentForm({ open, onOpenChange, doctor }: Book
             >
               {isSubmitting ? 'Đang đặt lịch...' : 'Đặt lịch hẹn'}
             </Button>
+           </div>
+         </form>
+        </>
+        ) : (
+          <div className="p-4 text-center text-muted-foreground">
+            Vui lòng chọn bác sĩ để đặt lịch hẹn
           </div>
-        </form>
+        )}
       </DialogContent>
     </Dialog>
   );
