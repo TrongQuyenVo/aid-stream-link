@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import BookAppointmentForm from '@/components/forms/BookAppointmentForm';
 
 export default function DoctorsPage() {
   const [selectedDoctor, setSelectedDoctor] = useState(null);
@@ -100,7 +101,13 @@ export default function DoctorsPage() {
                     Tình nguyện viên
                   </Badge>
                 )}
-                <Button className="w-full btn-healthcare">
+                <Button 
+                  className="w-full btn-healthcare"
+                  onClick={() => {
+                    setSelectedDoctor(doctor);
+                    setShowBookingForm(true);
+                  }}
+                >
                   <Calendar className="mr-2 h-4 w-4" />
                   Đặt lịch hẹn
                 </Button>
@@ -109,6 +116,13 @@ export default function DoctorsPage() {
           </motion.div>
         ))}
       </div>
+
+      {/* Booking Form */}
+      <BookAppointmentForm
+        open={showBookingForm}
+        onOpenChange={setShowBookingForm}
+        doctor={selectedDoctor}
+      />
     </motion.div>
   );
 }

@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
+import DonationForm from '@/components/forms/DonationForm';
 
 export default function DonationsPage() {
   const [selectedCampaign, setSelectedCampaign] = useState(null);
@@ -81,7 +82,10 @@ export default function DonationsPage() {
           <h1 className="healthcare-heading text-3xl font-bold">Quyên góp từ thiện</h1>
           <p className="healthcare-subtitle">Tham gia các chiến dịch quyên góp giúp đỡ người có hoàn cảnh khó khăn</p>
         </div>
-        <Button className="btn-charity">
+        <Button 
+          className="btn-charity"
+          onClick={() => setShowDonationForm(true)}
+        >
           <Gift className="mr-2 h-4 w-4" />
           Quyên góp ngay
         </Button>
@@ -170,7 +174,13 @@ export default function DonationsPage() {
                       <Badge variant="outline">
                         Còn {campaign.daysLeft} ngày
                       </Badge>
-                      <Button className="btn-charity">
+                      <Button 
+                        className="btn-charity"
+                        onClick={() => {
+                          setSelectedCampaign(campaign);
+                          setShowDonationForm(true);
+                        }}
+                      >
                         Ủng hộ ngay
                       </Button>
                     </div>
@@ -221,6 +231,13 @@ export default function DonationsPage() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Donation Form */}
+      <DonationForm
+        open={showDonationForm}
+        onOpenChange={setShowDonationForm}
+        campaign={selectedCampaign}
+      />
     </motion.div>
   );
 }
