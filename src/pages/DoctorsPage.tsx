@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Stethoscope, Star, MapPin, Calendar } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -6,42 +6,31 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import BookAppointmentForm from '@/components/forms/BookAppointmentForm';
+import { doctorsAPI } from '@/lib/api';
+import toast from 'react-hot-toast';
+import { Loader2 } from 'lucide-react';
 
 export default function DoctorsPage() {
   const [selectedDoctor, setSelectedDoctor] = useState(null);
   const [showBookingForm, setShowBookingForm] = useState(false);
-  const mockDoctors = [
-    {
-      id: 1,
-      name: 'BS. Nguyễn Văn A',
-      specialty: 'Tim mạch',
-      experience: 15,
-      rating: 4.8,
-      location: 'Hà Nội',
-      isVolunteer: true,
-      avatar: null
-    },
-    {
-      id: 2,
-      name: 'BS. Trần Thị B',
-      specialty: 'Da liễu',
-      experience: 12,
-      rating: 4.9,
-      location: 'TP.HCM',
-      isVolunteer: true,
-      avatar: null
-    },
-    {
-      id: 3,
-      name: 'BS. Lê Văn C',
-      specialty: 'Nhi khoa',
-      experience: 8,
-      rating: 4.7,
-      location: 'Đà Nẵng',
-      isVolunteer: true,
-      avatar: null
-    },
-  ];
+  const [doctors, setDoctors] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchDoctors = async () => {
+      try {
+        const response = await doctorsAPI.getAll({ isVolunteer: true });
+        setDoctors(response.data);
+      } catch (error: any) {
+        toast.error('Không thể tải danh sách bác sĩ');
+        console.error('Error fetching doctors:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchDoctors();
+  }, []);
 
   return (
     <motion.div
@@ -55,8 +44,17 @@ export default function DoctorsPage() {
         <p className="healthcare-subtitle">Tìm kiếm và kết nối với các bác sĩ chuyên khoa</p>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {mockDoctors.map((doctor, index) => (
+      {isLoading ? (
+        <div className="flex justify-center items-center py-12">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
+      ) : doctors.length === 0 ? (
+        <Card className="p-8 text-center">
+          <p className="text-muted-foreground">Hiện chưa có bác sĩ tình nguyện nào.</p>
+        </Card>
+      ) : (
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {doctors.map((doctor, index) => (
           <motion.div
             key={doctor.id}
             initial={{ opacity: 0, y: 20 }}
@@ -115,7 +113,8 @@ export default function DoctorsPage() {
             </Card>
           </motion.div>
         ))}
-      </div>
+        </div>
+      )}
 
       {/* Booking Form */}
       <BookAppointmentForm

@@ -18,6 +18,8 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import toast from 'react-hot-toast';
+import { appointmentsAPI } from '@/lib/api';
+import { useAuthStore } from '@/stores/authStore';
 
 interface Doctor {
   id: string;
@@ -56,6 +58,7 @@ const schema = yup.object({
 
 export default function BookAppointmentForm({ open, onOpenChange, doctor }: BookAppointmentFormProps) {
   const { t } = useTranslation();
+  const { user } = useAuthStore();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
@@ -86,21 +89,24 @@ export default function BookAppointmentForm({ open, onOpenChange, doctor }: Book
     setIsSubmitting(true);
     
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      console.log('Appointment data:', {
-        ...data,
+      const appointmentData = {
         doctorId: doctor.id,
-        doctorName: doctor.name,
-        doctorSpecialty: doctor.specialty
-      });
+        appointmentDate: format(data.appointmentDate, 'yyyy-MM-dd'),
+        appointmentTime: data.appointmentTime,
+        patientName: data.patientName,
+        patientPhone: data.patientPhone,
+        patientAge: data.patientAge,
+        symptoms: data.symptoms,
+        notes: data.notes || '',
+      };
+
+      await appointmentsAPI.create(appointmentData);
       
       toast.success('Đặt lịch hẹn thành công! Chúng tôi sẽ liên hệ xác nhận sớm.');
       reset();
       onOpenChange(false);
-    } catch (error) {
-      toast.error('Có lỗi xảy ra. Vui lòng thử lại!');
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || 'Có lỗi xảy ra. Vui lòng thử lại!');
     } finally {
       setIsSubmitting(false);
     }

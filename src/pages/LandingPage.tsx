@@ -8,9 +8,11 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAppStore } from '@/stores/appStore';
+import { cn } from '@/lib/utils';
 import doctorVolunteerImg from '@/assets/doctor-volunteer.jpg';
 import charityServiceImg from '@/assets/charity-service.jpg';
 import communityHealthImg from '@/assets/community-health.jpg';
@@ -516,7 +518,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Packages Section */}
+      {/* Activities Section - Hoạt Động Đã Thực Hiện */}
       <section id="packages" className="py-24 bg-background">
         <div className="container mx-auto px-4">
           <motion.div
@@ -525,58 +527,119 @@ export default function LandingPage() {
             viewport={{ once: true }}
             className="mx-auto mb-16 max-w-3xl text-center"
           >
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-warning/10 px-6 py-2">
-              <Package className="h-5 w-5 text-warning" />
-              <span className="text-sm font-medium text-warning">Gói khám sức khỏe</span>
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-success/10 px-6 py-2">
+              <Activity className="h-5 w-5 text-success" />
+              <span className="text-sm font-medium text-success">Thành tích đạt được</span>
             </div>
             <h2 className="healthcare-heading mb-6 text-5xl font-bold">
-              Gói y tế từ thiện
+              Hoạt Động Đã Thực Hiện
             </h2>
             <p className="text-xl text-muted-foreground">
-              Các gói khám sức khỏe toàn diện, hoàn toàn miễn phí cho người có hoàn cảnh khó khăn
+              Những đóng góp thiết thực mang lại niềm vui và sức khỏe cho cộng đồng
             </p>
           </motion.div>
 
-          <div className="grid gap-8 md:grid-cols-3">
-            {packages.map((pkg, index) => (
+          <div className="grid gap-8 md:grid-cols-3 mb-12">
+            {[
+              {
+                title: 'Khám Chữa Bệnh Miễn Phí',
+                achievements: [
+                  '15,000+ lượt khám bệnh',
+                  '50+ bác sĩ tình nguyện',
+                  '30+ chuyên khoa',
+                  'Phủ sóng 63 tỉnh thành'
+                ],
+                icon: '🏥',
+                color: 'text-blue-600'
+              },
+              {
+                title: 'Hỗ Trợ Tài Chính',
+                achievements: [
+                  '5,000+ ca bệnh được hỗ trợ',
+                  '20 tỷ đồng đã giải ngân',
+                  '100+ ca phẫu thuật lớn',
+                  '300+ ca bệnh hiểm nghèo'
+                ],
+                icon: '💰',
+                featured: true,
+                color: 'text-green-600'
+              },
+              {
+                title: 'Chương Trình Cộng Đồng',
+                achievements: [
+                  '200+ buổi tư vấn sức khỏe',
+                  '50+ chương trình khám chữa bệnh',
+                  '10,000+ người được hỗ trợ thuốc',
+                  '500+ gia đình được hỗ trợ'
+                ],
+                icon: '🤝',
+                color: 'text-purple-600'
+              }
+            ].map((activity, index) => (
               <motion.div
-                key={pkg.title}
+                key={index}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="relative"
               >
-                {pkg.popular && (
-                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-primary text-white px-6 py-2 rounded-full text-sm font-medium shadow-lg z-10">
-                    Phổ biến nhất
-                  </div>
-                )}
-                <Card className={`healthcare-card h-full border-2 ${pkg.popular ? 'border-primary shadow-2xl scale-105' : 'border-border'}`}>
-                  <CardHeader className="text-center pb-4">
-                    <CardTitle className="text-2xl mb-2">{pkg.title}</CardTitle>
-                    <div className="text-4xl font-bold text-primary mb-2">{pkg.price}</div>
+                <Card className={cn(
+                  "healthcare-card h-full hover:shadow-xl transition-all duration-300",
+                  activity.featured && "border-primary shadow-lg scale-105"
+                )}>
+                  <CardHeader className="text-center">
+                    <div className={cn("text-6xl mb-4", activity.color)}>{activity.icon}</div>
+                    <CardTitle className="healthcare-heading text-xl">{activity.title}</CardTitle>
+                    {activity.featured && (
+                      <div className="mt-2">
+                        <Badge className="bg-success text-success-foreground">Nổi bật</Badge>
+                      </div>
+                    )}
                   </CardHeader>
                   <CardContent>
                     <ul className="space-y-3">
-                      {pkg.features.map((feature, i) => (
-                        <li key={i} className="flex items-start gap-3">
+                      {activity.achievements.map((achievement, idx) => (
+                        <li key={idx} className="flex items-start gap-3">
                           <CheckCircle2 className="h-5 w-5 text-success flex-shrink-0 mt-0.5" />
-                          <span className="text-sm">{feature}</span>
+                          <span className="text-sm">{achievement}</span>
                         </li>
                       ))}
                     </ul>
-                    <Button 
-                      className="w-full mt-6 btn-healthcare"
-                      onClick={() => navigate('/register')}
-                    >
-                      Đăng ký ngay
-                    </Button>
                   </CardContent>
                 </Card>
               </motion.div>
             ))}
           </div>
+
+          {/* Thống kê tổng quan */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="bg-gradient-primary text-white rounded-2xl p-8 md:p-12 shadow-2xl"
+          >
+            <h3 className="text-2xl md:text-3xl font-bold text-center mb-8">
+              Tổng quan thành tích
+            </h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+              <div className="text-center">
+                <div className="text-4xl md:text-5xl font-bold mb-2">20,000+</div>
+                <div className="text-white/90 text-sm md:text-base">Bệnh nhân</div>
+              </div>
+              <div className="text-center">
+                <div className="text-4xl md:text-5xl font-bold mb-2">100+</div>
+                <div className="text-white/90 text-sm md:text-base">Bác sĩ</div>
+              </div>
+              <div className="text-center">
+                <div className="text-4xl md:text-5xl font-bold mb-2">50+</div>
+                <div className="text-white/90 text-sm md:text-base">Chương trình</div>
+              </div>
+              <div className="text-center">
+                <div className="text-4xl md:text-5xl font-bold mb-2">30 tỷ</div>
+                <div className="text-white/90 text-sm md:text-base">Đồng hỗ trợ</div>
+              </div>
+            </div>
+          </motion.div>
         </div>
       </section>
 
