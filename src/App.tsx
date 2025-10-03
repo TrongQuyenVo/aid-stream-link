@@ -12,6 +12,9 @@ import "./i18n";
 
 // Pages
 import LandingPage from "./pages/LandingPage";
+import ServicesPage from "./pages/ServicesPage";
+import ProgramsPage from "./pages/ProgramsPage";
+import OrganizationsPage from "./pages/OrganizationsPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import Dashboard from "./pages/Dashboard";
@@ -71,6 +74,9 @@ const App = () => {
             <Route path="/" element={<Layout />}>
               {/* Public Routes */}
               <Route index element={isAuthenticated ? <Navigate to="/dashboard" /> : <LandingPage />} />
+              <Route path="/services" element={<ServicesPage />} />
+              <Route path="/programs" element={<ProgramsPage />} />
+              <Route path="/organizations" element={<OrganizationsPage />} />
               <Route path="/login" element={isAuthenticated ? <Navigate to="/dashboard" /> : <LoginPage />} />
               <Route path="/register" element={isAuthenticated ? <Navigate to="/dashboard" /> : <RegisterPage />} />
               
